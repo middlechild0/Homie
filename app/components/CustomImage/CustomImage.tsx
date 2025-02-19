@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { pictures } from '../pictures';
 import styles from './styles.module.css';
 
@@ -20,9 +20,19 @@ const CustomImage: React.FC<CustomImageProps> = ({
   height 
 }) => {
   const image = pictures[imageKey];
+  const [isRippling, setIsRippling] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    setIsRippling(true);
+    setTimeout(() => setIsRippling(false), 600);
+  };
   
   return (
-    <div className={`${styles.container} ${className}`}>
+    <div 
+      className={`${styles.container} ${className} ripple ${isRippling ? 'active' : ''}`}
+      onClick={handleClick}
+    >
+
       {React.cloneElement(image, {
         className: styles.image,
         width: width || image.props.width,
