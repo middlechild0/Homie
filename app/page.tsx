@@ -2,18 +2,101 @@
 
 import React, { useState } from 'react';
 import CustomImage from './components/CustomImage/CustomImage';
+import FilterComponent from './components/FilterComponent';
+import ProfileComponent from './components/ProfileComponent';
+import SearchComponent from './components/SearchComponent';
 import { Search, Sliders, ShoppingCart, User, Star, MapPin, Heart, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+
+const listings = [
+  {
+    id: 1,
+    title: "Luxury Beachfront Villa",
+    location: "Malibu, CA",
+    price: 450,
+    rating: 4.9,
+    reviews: 128,
+    image: 'house3' as const,
+    amenities: ['Pool', 'Beach Access', 'WiFi'],
+    bedrooms: 4,
+    bathrooms: 3
+  },
+  {
+    id: 2,
+    title: "Downtown Modern Loft",
+    location: "New York, NY",
+    price: 200,
+    rating: 4.7,
+    reviews: 95,
+    image: 'house4' as const,
+    amenities: ['WiFi', 'Gym', 'Parking'],
+    bedrooms: 1,
+    bathrooms: 1
+  },
+  {
+    id: 3,
+    title: "Mountain View Cabin",
+    location: "Aspen, CO",
+    price: 300,
+    rating: 4.8,
+    reviews: 75,
+    image: 'house5' as const,
+    amenities: ['Fireplace', 'Hot Tub', 'WiFi'],
+    bedrooms: 3,
+    bathrooms: 2
+  },
+  {
+    id: 4,
+    title: "Coastal Paradise Home",
+    location: "Miami, FL",
+    price: 380,
+    rating: 4.6,
+    reviews: 112,
+    image: 'house6' as const,
+    amenities: ['Pool', 'Beach Access', 'WiFi'],
+    bedrooms: 3,
+    bathrooms: 2
+  },
+  {
+    id: 5,
+    title: "Urban Studio Apartment",
+    location: "San Francisco, CA",
+    price: 175,
+    rating: 4.5,
+    reviews: 89,
+    image: 'house7' as const,
+    amenities: ['WiFi', 'Kitchen', 'Workspace'],
+    bedrooms: 1,
+    bathrooms: 1
+  },
+  {
+    id: 6,
+    title: "Historic Downtown House",
+    location: "Boston, MA",
+    price: 275,
+    rating: 4.7,
+    reviews: 134,
+    image: 'house1' as const,
+    amenities: ['Parking', 'Garden', 'WiFi'],
+    bedrooms: 2,
+    bathrooms: 2
+  }
+];
 
 const Homie = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [minRating, setMinRating] = useState<number>(0);
   const [currentAdIndex, setCurrentAdIndex] = useState<number>(0);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
   const amenities = [
     'WiFi', 'Pool', 'Kitchen', 'Parking', 'Air Conditioning', 'Washer', 'Dryer', 'TV'
+  ];
+  const propertyTypes = [
+    'House', 'Apartment', 'Villa', 'Cabin', 'Studio', 'Loft'
   ];
 
   const advertisements = [
@@ -31,91 +114,30 @@ const Homie = () => {
     }
   ];
 
-  const listings = [
-    {
-      id: 1,
-      title: "Luxury Beachfront Villa",
-      location: "Malibu, CA",
-      price: 450,
-      rating: 4.9,
-      reviews: 128,
-      image: 'house3' as const,
-      amenities: ['Pool', 'Beach Access', 'WiFi'],
-      bedrooms: 4,
-      bathrooms: 3
-    },
-    {
-      id: 2,
-      title: "Downtown Modern Loft",
-      location: "New York, NY",
-      price: 200,
-      rating: 4.7,
-      reviews: 95,
-      image: 'house4' as const,
-      amenities: ['WiFi', 'Gym', 'Parking'],
-      bedrooms: 1,
-      bathrooms: 1
-    },
-    {
-      id: 3,
-      title: "Mountain View Cabin",
-      location: "Aspen, CO",
-      price: 300,
-      rating: 4.8,
-      reviews: 75,
-      image: 'house5' as const,
-      amenities: ['Fireplace', 'Hot Tub', 'WiFi'],
-      bedrooms: 3,
-      bathrooms: 2
-    },
-    {
-      id: 4,
-      title: "Coastal Paradise Home",
-      location: "Miami, FL",
-      price: 380,
-      rating: 4.6,
-      reviews: 112,
-      image: 'house6' as const,
-      amenities: ['Pool', 'Beach Access', 'WiFi'],
-      bedrooms: 3,
-      bathrooms: 2
-    },
-    {
-      id: 5,
-      title: "Urban Studio Apartment",
-      location: "San Francisco, CA",
-      price: 175,
-      rating: 4.5,
-      reviews: 89,
-      image: 'house7' as const,
-      amenities: ['WiFi', 'Kitchen', 'Workspace'],
-      bedrooms: 1,
-      bathrooms: 1
-    },
-    {
-      id: 6,
-      title: "Historic Downtown House",
-      location: "Boston, MA",
-      price: 275,
-      rating: 4.7,
-      reviews: 134,
-      image: 'house1' as const,
-      amenities: ['Parking', 'Garden', 'WiFi'],
-      bedrooms: 2,
-      bathrooms: 2
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Filter Button on the Left Side */}
-      <button 
-        onClick={() => setShowFilters(!showFilters)}
-        className={`fixed top-1/4 left-0 z-10 ${showFilters ? 'bg-indigo-600' : 'bg-gray-600'} p-3 text-white rounded-full transition-all duration-300
-          md:left-4 md:top-20 md:w-auto md:h-auto
-          ${showFilters ? 'md:max-w-full' : 'md:max-w-[50%]'}`}>
-        <Sliders className="w-6 h-6"/>
-      </button>
+      {/* Filter Component */}
+      <div className={`fixed inset-0 bg-black bg-opacity-50 z-50 ${showFilters ? 'block' : 'hidden'}`} onClick={() => setShowFilters(false)}>
+        <FilterComponent
+          listings={listings}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          amenities={amenities}
+          selectedAmenities={selectedAmenities}
+          setSelectedAmenities={setSelectedAmenities}
+          propertyTypes={propertyTypes}
+          selectedTypes={selectedTypes}
+          setSelectedTypes={setSelectedTypes}
+          minRating={minRating}
+          setMinRating={setMinRating}
+          onFilterChange={(filteredListings) => {
+            // Handle filtered listings
+            console.log('Filtered listings:', filteredListings);
+          }}
+          onClose={() => setShowFilters(false)}
+        />
+      </div>
 
       {/* Mobile Menu */}
       {showMobileMenu && (
@@ -156,25 +178,23 @@ const Homie = () => {
             <div className="text-2xl font-bold text-indigo-600">HOMEI</div>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Component */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search for homes..."
-                className="w-full px-4 py-2 pl-10 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
-            </div>
+            <SearchComponent
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              onSearch={() => {
+                // Implement search functionality
+                console.log('Searching for:', searchQuery);
+              }}
+            />
           </div>
 
           {/* Navigation Icons */}
           <div className="hidden md:flex items-center space-x-6">
             <button 
               className="text-gray-600 hover:text-gray-900"
-              onClick={() => setShowFilters(true)}
+              onClick={() => setShowFilters(!showFilters)}
             >
               <Sliders className="w-6 h-6" />
             </button>
@@ -182,9 +202,12 @@ const Homie = () => {
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
             </button>
-            <button className="text-gray-600 hover:text-gray-900">
-              <User className="w-6 h-6" />
-            </button>
+            <ProfileComponent
+              onLogout={() => {
+                // Implement logout functionality
+                console.log('User logged out');
+              }}
+            />
           </div>
         </div>
       </div>
@@ -272,5 +295,4 @@ const Homie = () => {
     </div>
   );
 };
-
 export default Homie;
