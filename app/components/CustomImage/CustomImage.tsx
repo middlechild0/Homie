@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { pictures } from './pictures';
+import { pictures } from '../pictures';
+import styles from './styles.module.css';
 
 interface CustomImageProps {
   imageKey: keyof typeof pictures;
@@ -21,12 +21,16 @@ const CustomImage: React.FC<CustomImageProps> = ({
 }) => {
   const image = pictures[imageKey];
   
-  return React.cloneElement(image, {
-    className,
-    width: width || image.props.width,
-    height: height || image.props.height,
-    alt
-  });
+  return (
+    <div className={`${styles.container} ${className}`}>
+      {React.cloneElement(image, {
+        className: styles.image,
+        width: width || image.props.width,
+        height: height || image.props.height,
+        alt
+      })}
+    </div>
+  );
 };
 
 export default CustomImage;

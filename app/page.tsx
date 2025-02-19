@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import CustomImage from './components/customImage';
-import { pictures } from './components/pictures';
+import CustomImage from './components/CustomImage/CustomImage';
 import { Search, Sliders, ShoppingCart, User, Star, MapPin, Heart, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 
 const Homie = () => {
@@ -205,7 +204,7 @@ const Homie = () => {
                       className="w-full h-full object-cover rounded-lg"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg" />
-                    <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-8">
+                    <div className="absolute inset-0 flex flex-col justify-end items-center text-white p-8 pb-16 bg-gradient-to-t from-black/60 to-transparent">
                       <h2 className="text-3xl font-bold mb-4">{ad.title}</h2>
                       <p className="text-lg text-center">{ad.description}</p>
                     </div>
@@ -234,7 +233,7 @@ const Homie = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((listing) => (
             <div key={listing.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="relative h-48">
+              <div className="relative h-48 ">
                 <CustomImage 
                   imageKey={listing.image}
                   alt={listing.title}
@@ -244,7 +243,7 @@ const Homie = () => {
                   <Heart className="w-5 h-5 text-gray-600" />
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-4 z-30">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-semibold">{listing.title}</h3>
                   <div className="flex items-center space-x-1">
