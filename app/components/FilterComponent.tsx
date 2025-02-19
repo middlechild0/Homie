@@ -96,17 +96,20 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       const priceMatch = listing.price >= priceRange[0] && listing.price <= priceRange[1];
       const amenitiesMatch = selectedAmenities.length === 0 ? true : 
         selectedAmenities.every(amenity => listing.amenities?.includes(amenity));
-
+  
       const typeMatch = selectedTypes.length === 0 || 
         selectedTypes.includes(listing.title.split(' ')[0]);
+  
       const ratingMatch = listing.rating >= minRating;
       const locationMatch = !locationFilter || 
         listing.location.toLowerCase().includes(locationFilter.toLowerCase());
-      
+  
       return priceMatch && amenitiesMatch && typeMatch && ratingMatch && locationMatch;
     });
+  
     onFilterChange(filtered);
-  }, [priceRange, selectedAmenities, locationFilter]);
+  }, [priceRange, selectedAmenities, locationFilter, selectedTypes, minRating, listings]);
+  
 
   const handleAmenityChange = (amenity: string) => {
     setSelectedAmenities(
