@@ -1,86 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+import { Listing, listings } from './components/listings';
 import CustomImage from './components/CustomImage/CustomImage';
 import FilterComponent from './components/FilterComponent';
 import ProfileComponent from './components/ProfileComponent';
 import SearchComponent from './components/SearchComponent';
 import { Search, Sliders, ShoppingCart, User, Star, MapPin, Heart, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
-
-const listings = [
-  {
-    id: 1,
-    title: "Luxury Beachfront Villa",
-    location: "Malibu, CA",
-    price: 450,
-    rating: 4.9,
-    reviews: 128,
-    image: 'house3' as const,
-    amenities: ['Pool', 'Beach Access', 'WiFi'],
-    bedrooms: 4,
-    bathrooms: 3
-  },
-  {
-    id: 2,
-    title: "Downtown Modern Loft",
-    location: "New York, NY",
-    price: 200,
-    rating: 4.7,
-    reviews: 95,
-    image: 'house4' as const,
-    amenities: ['WiFi', 'Gym', 'Parking'],
-    bedrooms: 1,
-    bathrooms: 1
-  },
-  {
-    id: 3,
-    title: "Mountain View Cabin",
-    location: "Aspen, CO",
-    price: 300,
-    rating: 4.8,
-    reviews: 75,
-    image: 'house5' as const,
-    amenities: ['Fireplace', 'Hot Tub', 'WiFi'],
-    bedrooms: 3,
-    bathrooms: 2
-  },
-  {
-    id: 4,
-    title: "Coastal Paradise Home",
-    location: "Miami, FL",
-    price: 380,
-    rating: 4.6,
-    reviews: 112,
-    image: 'house6' as const,
-    amenities: ['Pool', 'Beach Access', 'WiFi'],
-    bedrooms: 3,
-    bathrooms: 2
-  },
-  {
-    id: 5,
-    title: "Urban Studio Apartment",
-    location: "San Francisco, CA",
-    price: 175,
-    rating: 4.5,
-    reviews: 89,
-    image: 'house7' as const,
-    amenities: ['WiFi', 'Kitchen', 'Workspace'],
-    bedrooms: 1,
-    bathrooms: 1
-  },
-  {
-    id: 6,
-    title: "Historic Downtown House",
-    location: "Boston, MA",
-    price: 275,
-    rating: 4.7,
-    reviews: 134,
-    image: 'house1' as const,
-    amenities: ['Parking', 'Garden', 'WiFi'],
-    bedrooms: 2,
-    bathrooms: 2
-  }
-];
 
 const Homie = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -91,6 +20,8 @@ const Homie = () => {
   const [currentAdIndex, setCurrentAdIndex] = useState<number>(0);
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
+  const router = useRouter();
+  const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
 
   const amenities = [
     'WiFi', 'Pool', 'Kitchen', 'Parking', 'Air Conditioning', 'Washer', 'Dryer', 'TV'
@@ -114,6 +45,10 @@ const Homie = () => {
     }
   ];
 
+  const handleFilterChange = (filtered: Listing[]) => {
+    setFilteredListings(filtered);
+    setShowFilters(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -131,11 +66,9 @@ const Homie = () => {
           setSelectedTypes={setSelectedTypes}
           minRating={minRating}
           setMinRating={setMinRating}
-          onFilterChange={(filteredListings) => {
-            // Handle filtered listings
-            console.log('Filtered listings:', filteredListings);
-          }}
+          onFilterChange={handleFilterChange}
           onClose={() => setShowFilters(false)}
+          onSave={() => handleFilterChange(filteredListings)}
         />
       </div>
 
@@ -156,16 +89,17 @@ const Homie = () => {
               <button className="flex items-center text-gray-600 hover:text-gray-900">
                 <span>Profile</span>
               </button>
-              <button className="flex items-center text-gray-600 hover:text-gray-900 relative">
+              <Link href="/cart" className="flex items-center text-gray-600 hover:text-gray-900 relative">
+
                 <span>Cart</span>
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       )}
 
-      {/* Header */}
+     {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center">
@@ -198,10 +132,13 @@ const Homie = () => {
             >
               <Sliders className="w-6 h-6" />
             </button>
-            <button className="text-gray-600 hover:text-gray-900 relative">
+            <Link href="/cart" className="text-gray-600 hover:text-gray-900 relative">
+
+
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
-            </button>
+            </Link>
+
             <ProfileComponent
               onLogout={() => {
                 // Implement logout functionality
@@ -211,7 +148,6 @@ const Homie = () => {
           </div>
         </div>
       </div>
-
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Advertisements Carousel */}
@@ -254,9 +190,9 @@ const Homie = () => {
 
         {/* Listings Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((listing) => (
+          {filteredListings.map((listing) => (
             <div key={listing.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="relative h-48 ">
+              <div className="relative h-48">
                 <CustomImage 
                   imageKey={listing.image}
                   alt={listing.title}
@@ -295,4 +231,5 @@ const Homie = () => {
     </div>
   );
 };
+
 export default Homie;

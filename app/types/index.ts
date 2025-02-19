@@ -25,7 +25,8 @@ export interface Listing {
   price: number;
   rating: number;
   reviews: number;
-  image: string;
+  image: 'house1' | 'house2' | 'house3' | 'house4' | 'house5' | 'house6' | 'house7';
+
   amenities: string[];
   bedrooms: number;
   bathrooms: number;

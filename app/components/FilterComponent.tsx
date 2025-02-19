@@ -13,12 +13,13 @@ interface FilterComponentProps {
   selectedAmenities: string[];
   setSelectedAmenities: (amenities: string[]) => void;
   onFilterChange: (filteredListings: Listing[]) => void;
-  onClose: () => void;
+  onClose: () => void; // Corrected type definition
   propertyTypes: string[];
   selectedTypes: string[];
   setSelectedTypes: React.Dispatch<React.SetStateAction<string[]>>;
   minRating: number;
   setMinRating: (rating: number) => void;
+  onSave: () => void; // Add onSave prop
 }
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
@@ -34,7 +35,8 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   minRating,
   setMinRating,
   onFilterChange,
-  onClose
+  onClose,
+  onSave // Destructure onSave prop
 }) => {
   const [locationFilter, setLocationFilter] = useState<string>('');
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
@@ -79,6 +81,18 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     setShowClearFilters(false);
   };
 
+  const saveFilters = () => {
+    // Implement the logic to save the filters
+    console.log('Filters saved:', {
+      priceRange,
+      selectedAmenities,
+      selectedTypes,
+      minRating,
+      locationFilter
+    });
+    onSave(); // Call onSave prop to close the filter component
+  };
+
   useEffect(() => {
     const hasFilters = 
       priceRange[0] !== 0 || 
@@ -96,20 +110,16 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       const priceMatch = listing.price >= priceRange[0] && listing.price <= priceRange[1];
       const amenitiesMatch = selectedAmenities.length === 0 ? true : 
         selectedAmenities.every(amenity => listing.amenities?.includes(amenity));
-  
       const typeMatch = selectedTypes.length === 0 || 
         selectedTypes.includes(listing.title.split(' ')[0]);
-  
       const ratingMatch = listing.rating >= minRating;
       const locationMatch = !locationFilter || 
         listing.location.toLowerCase().includes(locationFilter.toLowerCase());
-  
+      
       return priceMatch && amenitiesMatch && typeMatch && ratingMatch && locationMatch;
     });
-  
     onFilterChange(filtered);
   }, [priceRange, selectedAmenities, locationFilter, selectedTypes, minRating, listings]);
-  
 
   const handleAmenityChange = (amenity: string) => {
     setSelectedAmenities(
@@ -124,7 +134,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       className="fixed top-0 left-0 w-80 h-full bg-white shadow-xl z-50 p-6 transform transition-transform duration-300 ease-in-out font-sans overflow-y-auto"
       onClick={(e) => e.stopPropagation()}
     >
-
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-800">Filters</h2>
         <button 
@@ -132,7 +141,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
             e.stopPropagation();
             onClose();
           }}
-
           className="p-1 hover:bg-gray-100 rounded-full"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,7 +162,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
             className="w-full range-slider"
           />
           <span>${priceRange[1]}</span>
-
         </div>
       </div>
 
@@ -262,6 +269,16 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
           </button>
         </div>
       )}
+
+      <div className="mt-4">
+        <button
+          onClick={saveFilters}
+          className="w-full flex items-center justify-center space-x-2 px-6 py-3 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+        >
+          <Sliders className="w-5 h-5" />
+          <span>Save Filters</span>
+        </button>
+      </div>
     </div>
   );
 };
