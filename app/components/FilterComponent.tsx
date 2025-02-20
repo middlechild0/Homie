@@ -13,13 +13,13 @@ interface FilterComponentProps {
   selectedAmenities: string[];
   setSelectedAmenities: (amenities: string[]) => void;
   onFilterChange: (filteredListings: Listing[]) => void;
-  onClose: () => void; // Corrected type definition
+  onClose: () => void;
   propertyTypes: string[];
   selectedTypes: string[];
   setSelectedTypes: React.Dispatch<React.SetStateAction<string[]>>;
   minRating: number;
   setMinRating: (rating: number) => void;
-  onSave: () => void; // Add onSave prop
+  onSave: () => void;
 }
 
 const FilterComponent: React.FC<FilterComponentProps> = ({
@@ -36,7 +36,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   setMinRating,
   onFilterChange,
   onClose,
-  onSave // Destructure onSave prop
+  onSave
 }) => {
   const [locationFilter, setLocationFilter] = useState<string>('');
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
@@ -82,7 +82,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   };
 
   const saveFilters = () => {
-    // Implement the logic to save the filters
     console.log('Filters saved:', {
       priceRange,
       selectedAmenities,
@@ -90,7 +89,7 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       minRating,
       locationFilter
     });
-    onSave(); // Call onSave prop to close the filter component
+    onSave();
   };
 
   useEffect(() => {
@@ -222,10 +221,8 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
           {[1, 2, 3, 4, 5].map((rating) => (
             <button
               key={rating}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRatingChange(rating);
-              }}
+              onClick={() => handleRatingChange(rating)}
+
               className={`p-2 rounded-full ${
                 minRating >= rating
                   ? 'bg-indigo-600 text-white'
@@ -246,10 +243,8 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
               <input
                 type="checkbox"
                 checked={selectedAmenities.includes(amenity)}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleAmenityChange(amenity);
-                }}
+                onChange={() => handleAmenityChange(amenity)}
+
                 className="w-4 h-4 rounded border-gray-300 text indigo-600 focus:ring-indigo-500"
               />
               <span>{amenity}</span>

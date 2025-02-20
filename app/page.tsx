@@ -47,7 +47,6 @@ const Homie = () => {
 
   const handleFilterChange = (filtered: Listing[]) => {
     setFilteredListings(filtered);
-    setShowFilters(false);
   };
 
   return (
@@ -68,7 +67,7 @@ const Homie = () => {
           setMinRating={setMinRating}
           onFilterChange={handleFilterChange}
           onClose={() => setShowFilters(false)}
-          onSave={() => handleFilterChange(filteredListings)}
+          onSave={() => setShowFilters(false)}
         />
       </div>
 
@@ -90,7 +89,6 @@ const Homie = () => {
                 <span>Profile</span>
               </button>
               <Link href="/cart" className="flex items-center text-gray-600 hover:text-gray-900 relative">
-
                 <span>Cart</span>
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
               </Link>
@@ -133,8 +131,6 @@ const Homie = () => {
               <Sliders className="w-6 h-6" />
             </button>
             <Link href="/cart" className="text-gray-600 hover:text-gray-900 relative">
-
-
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
             </Link>
